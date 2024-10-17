@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import BetContainer from "@/components/BetContainer.jsx";
 
@@ -11,7 +11,14 @@ function Home() {
     const stakeInputRef = useRef(null)
     const oddsInputRef = useRef(null)
 
-
+    useEffect(() => {
+        if (localStorage.getItem('betContainers')) {
+            setBetContainers(JSON.parse(localStorage.getItem('betContainers')))
+        }
+        if (localStorage.getItem('betNumber')) {
+            setBetNumber(JSON.parse(localStorage.getItem('betNumber')))
+        }
+    }, [])
 
 
     const addBet = () => {
@@ -21,12 +28,14 @@ function Home() {
         const id = betNumber
 
         const current = new Date()
-
         const time = `${current.getHours().toString().padStart(2,'0')}:${current.getMinutes().toString().padStart(2,'0')}:${current.getSeconds().toString().padStart(2, '0')} 
         ${current.getDate().toString().padStart(2,'0')}/${current.getMonth().toString().padStart(2,'0')}/${current.getFullYear()}`
 
         setBetContainers([...betContainers, {id,title,stake,odds,time}])
+        localStorage.setItem('betContainers', JSON.stringify([...betContainers, {id,title,stake,odds,time}]))
         setBetNumber(betNumber + 1)
+        localStorage.setItem('betNumber', betNumber+1)
+
         titleInputRef.current.value = ""
         stakeInputRef.current.value = "0"
         oddsInputRef.current.value = "1.0"

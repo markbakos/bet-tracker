@@ -1,10 +1,25 @@
 
+import { useState, useEffect } from "react";
+
 function BetContainer({id, title, stake, odds, time}) {
     const toWin = (stake * odds).toLocaleString()
     const divID = `div${id}`
     const winID = `win${id}`
     const checkID = `check${id}`
     const xID = `x${id}`
+
+    const [betStatus, setBetStatus] = useState('')
+
+    useEffect(() => {
+        if (localStorage.getItem(divID)) {
+            setBetStatus(localStorage.getItem(divID))
+            if (localStorage.getItem(divID) === 'won') {
+                wonBet()
+            } else if (localStorage.getItem(divID) === 'lost') {
+                lostBet()
+            }
+        }
+    }, [])
 
     const wonBet = () => {
 
@@ -17,6 +32,9 @@ function BetContainer({id, title, stake, odds, time}) {
         document.getElementById(checkID).classList.add("text-white")
 
         document.getElementById(winID).innerHTML = `Won: ${toWin}`
+
+        localStorage.setItem(divID, 'won');
+        setBetStatus('won');
 
     }
 
@@ -31,7 +49,12 @@ function BetContainer({id, title, stake, odds, time}) {
         document.getElementById(xID).classList.add("text-white")
 
         document.getElementById(winID).innerHTML = `Lost: ${stake}`
+
+        localStorage.setItem(divID, 'lost')
+        setBetStatus('lost')
     }
+
+
 
 
     return (
@@ -61,8 +84,10 @@ function BetContainer({id, title, stake, odds, time}) {
                         </div>
 
                     </div>
-                    <div className="w-[8vw] h-[4.5vh] sm:w-[2.5vw] bg-white rounded-full mr-2">
-                    </div>
+                    <img
+                        title="Delete Bet"
+                        className="w-8 mr-2 cursor-pointer"
+                        src="https://github.com/mrkdsoftware/bet-tracker/blob/main/src/assets/trash.png?raw=true" />
 
                 </div>
             </div>
