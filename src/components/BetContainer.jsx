@@ -1,61 +1,78 @@
 
 import { useState, useEffect } from "react";
 
-function BetContainer({id, title, stake, odds, time}) {
-    const toWin = (stake * odds).toLocaleString()
+function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
+    const toWin = (stake * odds).toFixed(2).toLocaleString()
     const divID = `div${id}`
     const winID = `win${id}`
     const checkID = `check${id}`
     const xID = `x${id}`
-
-    const [betStatus, setBetStatus] = useState('')
+    const checkDivID = `checkDiv${id}`
+    const xDivID = `xDiv${id}`
 
     useEffect(() => {
         if (localStorage.getItem(divID)) {
-            setBetStatus(localStorage.getItem(divID))
             if (localStorage.getItem(divID) === 'won') {
-                wonBet()
+                updateWonDesign()
             } else if (localStorage.getItem(divID) === 'lost') {
-                lostBet()
+                updateLostDesign()
             }
         }
     }, [])
-
     const wonBet = () => {
+        updateWonDesign()
+        if(localStorage.getItem(divID) !== 'won'){
+            localStorage.setItem(divID, 'won');
 
+            updateTotalWon(parseFloat(toWin))
+        }
+
+    }
+    const lostBet = () => {
+        updateLostDesign()
+        if(localStorage.getItem(divID) !== 'lost'){
+            localStorage.setItem(divID, 'lost')
+            updateTotalWon(-parseFloat(stake))
+        }
+
+    }
+    const updateTotalWon = (amount) => {
+        const currentTotalWon = localStorage.getItem('totalWon') ? parseFloat(localStorage.getItem('totalWon')) : 0
+        const newTotalWon = currentTotalWon + amount
+        localStorage.setItem('totalWon', newTotalWon.toFixed(2))
+    }
+
+    const deleteBet = () => {
+        if(localStorage.getItem(divID) === 'won'){
+            updateTotalWon(-parseFloat(toWin))
+        } else if(localStorage.getItem(divID) === 'lost') {
+            updateTotalWon(+parseFloat(stake))
+        }
+        onDeleteBet(id)
+    }
+
+
+    const updateWonDesign = () => {
         document.getElementById(divID).classList.remove("bg-red-500")
         document.getElementById(xID).classList.add("text-red-500")
         document.getElementById(xID).classList.remove("text-white")
-
         document.getElementById(divID).classList.add("bg-green-500")
         document.getElementById(checkID).classList.remove("text-green-500")
         document.getElementById(checkID).classList.add("text-white")
+        document.getElementById(xDivID).classList.add("hidden")
 
         document.getElementById(winID).innerHTML = `Won: ${toWin}`
-
-        localStorage.setItem(divID, 'won');
-        setBetStatus('won');
-
     }
-
-    const lostBet = () => {
-
+    const updateLostDesign = () => {
         document.getElementById(divID).classList.remove("bg-green-500")
         document.getElementById(checkID).classList.remove("text-white")
         document.getElementById(checkID).classList.add("text-green-500")
-
         document.getElementById(divID).classList.add("bg-red-500")
         document.getElementById(xID).classList.remove("text-red-500")
         document.getElementById(xID).classList.add("text-white")
-
+        document.getElementById(checkDivID).classList.add("hidden")
         document.getElementById(winID).innerHTML = `Lost: ${stake}`
-
-        localStorage.setItem(divID, 'lost')
-        setBetStatus('lost')
     }
-
-
-
 
     return (
         <>
@@ -70,23 +87,31 @@ function BetContainer({id, title, stake, odds, time}) {
                 </div>
                 <div className="flex flex-row justify-between">
                     <div className="flex flex-row">
-                        <div
+                        <div id={checkDivID}
                             title="Won Bet"
                             onClick={wonBet}
                             className="w-[8vw] h-[4.5vh] sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-green-500 transition ease-in-out transition:duration-400 transition:delay-100">
-                            <p id={checkID} className="text-center text-4xl text-green-500 hover:text-white transition ease-in-out transition:duration-400 transition:delay-100">✔</p>
+                            <p id={checkID}
+                               className="text-center text-4xl text-green-500 hover:text-white select-none transition ease-in-out transition:duration-400 transition:delay-100">
+                                ✔
+                            </p>
                         </div>
-                        <div
+                        <div id={xDivID}
                             title="Lost Bet"
                             onClick={lostBet}
                             className="w-[8vw] h-[4.5vh] sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-red-500 transition ease-in-out transition:duration-400 transition:delay-100">
-                            <p id={xID} className="text-center text-4xl text-red-500 hover:text-white transition ease-in-out transition:duration-400 transition:delay-100">×</p>
+                            <p id={xID}
+                               className="text-center text-4xl text-red-500 hover:text-white select-none transition ease-in-out transition:duration-400 transition:delay-100">
+                                ×
+                            </p>
                         </div>
 
                     </div>
                     <img
                         title="Delete Bet"
-                        className="w-8 mr-2 cursor-pointer"
+                        onClick={deleteBet}
+                        draggable="false"
+                        className="w-8 mr-2 cursor-pointer select-none"
                         src="https://github.com/mrkdsoftware/bet-tracker/blob/main/src/assets/trash.png?raw=true" />
 
                 </div>

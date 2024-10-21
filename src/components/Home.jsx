@@ -11,6 +11,13 @@ function Home() {
     const stakeInputRef = useRef(null)
     const oddsInputRef = useRef(null)
 
+    const handleDeleteBet = (id) => {
+        const updatedBets = betContainers.filter((bet) => bet.id !== id)
+        setBetContainers(updatedBets)
+        localStorage.setItem('betContainers', JSON.stringify(updatedBets))
+
+    }
+
     useEffect(() => {
         if (localStorage.getItem('betContainers')) {
             setBetContainers(JSON.parse(localStorage.getItem('betContainers')))
@@ -20,6 +27,10 @@ function Home() {
         }
     }, [])
 
+    useEffect(() => {
+        const totalStake = betContainers.reduce((acc, bet) => acc + parseInt(bet.stake), 0);
+        localStorage.setItem('totalStake', totalStake);
+    }, [betContainers]);
 
     const addBet = () => {
         const title = titleInputRef.current.value
@@ -53,15 +64,31 @@ function Home() {
                 <h1 className="text-center text-2xl my-4">Add a new bet</h1>
                 <div className="flex flex-col justify-center items-center">
                     <select className="w-[55vw] sm:w-[14.5vw] h-6 rounded-lg text-center my-2">
-                        <option value="parlay">Parlay</option>
-                        <option value="single">Single (WIP)</option>
+                        <option
+                            value="parlay">Parlay</option>
+                        <option value="single">Single (Slots)</option>
                     </select>
 
-                    <input ref={titleInputRef} id="titleInput" type="text" placeholder="Title" maxLength="16" className="border rounded-lg text-center"></input>
-                    <input ref={stakeInputRef} id="stakeInput" type="number" placeholder="Stake" min="0" className="border rounded-lg text-center my-2"></input>
-                    <input ref={oddsInputRef} id="oddsInput" type="number" placeholder="Odds" min="1" className="border rounded-lg text-center"></input>
+                    <div className="hidden flex flex-col justify-center items-center">
+                        <input ref={titleInputRef} id="titleInput" type="text" placeholder="Slot" maxLength="16"
+                               className="border rounded-lg text-center"></input>
+                        <input ref={stakeInputRef} id="stakeInput" type="number" placeholder="Stake" min="0"
+                               className="border rounded-lg text-center my-2"></input>
+                    </div>
 
-                    <button onClick={addBet} className="w-[55vw] sm:w-[14.5vw] h-6 rounded-lg bg-gray text-white my-2">Add Bet</button>
+                    <div className="flex flex-col justify-center items-center">
+                        <input ref={titleInputRef} id="titleInput" type="text" placeholder="Title" maxLength="16"
+                               className="border rounded-lg text-center"></input>
+                        <input ref={stakeInputRef} id="stakeInput" type="number" placeholder="Stake" min="0"
+                               className="border rounded-lg text-center my-2"></input>
+                        <input ref={oddsInputRef} id="oddsInput" type="number" placeholder="Odds" min="1"
+                               className="border rounded-lg text-center"></input>
+                    </div>
+
+
+                    <button onClick={addBet}
+                            className="w-[55vw] sm:w-[14.5vw] h-6 rounded-lg bg-gray text-white my-2">Add Bet
+                    </button>
 
                     <div>
                         <h1 className="text-center text-2xl mt-4">Recent Bets</h1>
@@ -76,6 +103,7 @@ function Home() {
                                           title={bet.title === "" ? `Untitled Bet ${bet.id}` : bet.title}
                                           stake={bet.stake} odds={bet.odds}
                                           time={bet.time}
+                                          onDeleteBet={handleDeleteBet}
                             />
                         ))}
                     </div>
