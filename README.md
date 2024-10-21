@@ -2,8 +2,8 @@
 A simple Bet Tracker website that helps users keep track of their bets and parlays, monitor wins/losses, and analyze their betting performance over time. Built with ReactJS and Vite, this app provides a sleek and efficient user experience.
 
 ## Features
-**Add New Bets**: Easily log new bets with important details such as date, amount, and outcome.
-**Track Wins & Losses**: Automatically updates your wins, losses, and total profit/loss.
+**Add New Bets**: Easily log new bets with important details such as date, amount, and outcome.<br>
+**Track Wins & Losses**: Automatically updates your wins, losses, and total profit/loss. <br>
 **Responsive Design**: Works smoothly on mobile and desktop.
 
 ## Technologies Used
