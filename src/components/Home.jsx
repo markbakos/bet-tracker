@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 import BetContainer from "@/components/BetContainer.jsx";
+import SingleBetContainer from "@/components/SingleBetContainer.jsx";
 
 function Home() {
 
@@ -11,21 +12,21 @@ function Home() {
     const stakeInputRef = useRef(null)
     const oddsInputRef = useRef(null)
 
-    const [currentSelection, setSelection] = useState("parlay")
-
-    const handleDeleteBet = (id) => {
-        const updatedBets = betContainers.filter((bet) => bet.id !== id)
-        setBetContainers(updatedBets)
-        localStorage.setItem('betContainers', JSON.stringify(updatedBets))
-
-    }
-
     useEffect(() => {
         if (localStorage.getItem('betContainers')) {
             setBetContainers(JSON.parse(localStorage.getItem('betContainers')))
         }
         if (localStorage.getItem('betNumber')) {
             setBetNumber(JSON.parse(localStorage.getItem('betNumber')))
+        }
+
+        if(localStorage.getItem('containerSelected') === 'single') {
+            document.getElementById('selection').value = 'single'
+            updateSelection()
+        }
+        else{
+            document.getElementById('selection').value = 'parlay'
+            updateSelection()
         }
     }, [])
 
@@ -34,9 +35,9 @@ function Home() {
         localStorage.setItem('totalStake', totalStake);
     }, [betContainers]);
 
-
     const errorHandler = document.getElementById('errorHandler')
     let isErrorVisible = false
+    const [currentSelection, setSelection] = useState("parlay")
 
     const addBet = () => {
         if(currentSelection === 'parlay') {
@@ -77,21 +78,35 @@ function Home() {
                 isErrorVisible=true
             }
         }
+
         if(currentSelection === 'single') {
-            console.error("Not implemented")
+            console.error("Not implemented yet")
         }
     }
+
+    const handleDeleteBet = (id) => {
+        const updatedBets = betContainers.filter((bet) => bet.id !== id)
+        setBetContainers(updatedBets)
+        localStorage.setItem('betContainers', JSON.stringify(updatedBets))
+    }
+
 
     const updateSelection = () => {
         const selection = document.getElementById('selection').value
         if(selection === 'single') {
             setSelection("single")
+            localStorage.setItem('containerSelected', 'single')
             document.getElementById('single').classList.remove('hidden')
+            document.getElementById('singleContainer').classList.remove('hidden')
             document.getElementById('parlay').classList.add('hidden')
+            document.getElementById('parlayContainer').classList.add('hidden')
         } else if(selection === 'parlay') {
             setSelection("parlay")
+            localStorage.setItem('containerSelected', 'parlay')
             document.getElementById('single').classList.add('hidden')
+            document.getElementById('singleContainer').classList.add('hidden')
             document.getElementById('parlay').classList.remove('hidden')
+            document.getElementById('parlayContainer').classList.remove('hidden')
         }
     }
 
@@ -153,7 +168,8 @@ function Home() {
                             <div className="w-80 sm:w-[40vw] h-[0.2vh] bg-gray rounded-full mb-4"></div>
                         </div>
                     </div>
-                    <div className="flex flex-col-reverse">
+                    <div id="parlayContainer"
+                        className="flex flex-col-reverse">
                         {betContainers.map((bet, index) => (
                             <BetContainer betType={bet.betType}
                                           key={index}
@@ -165,6 +181,11 @@ function Home() {
                             />
                         ))}
                     </div>
+                    <div id="singleContainer"
+                         className="hidden flex flex-col-reverse">
+
+                    </div>
+
                 </div>
             </div>
         </>
