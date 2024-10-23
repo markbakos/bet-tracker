@@ -10,6 +10,8 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
     const checkDivID = `checkDiv${id}`
     const xDivID = `xDiv${id}`
 
+    const currency = localStorage.getItem('currency')
+
     useEffect(() => {
         if (localStorage.getItem(divID)) {
             if (localStorage.getItem(divID) === 'won') {
@@ -17,6 +19,9 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
             } else if (localStorage.getItem(divID) === 'lost') {
                 updateLostDesign()
             }
+        }
+        if(isNaN(parseInt(localStorage.getItem('totalWon')))) {
+            localStorage.setItem('totalWon', 0)
         }
     }, [])
     const wonBet = () => {
@@ -49,6 +54,7 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
             updateTotalWon(+parseFloat(stake))
         }
         onDeleteBet(id)
+        window.location.reload()
     }
 
 
@@ -61,7 +67,7 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
         document.getElementById(checkID).classList.add("text-white")
         document.getElementById(xDivID).classList.add("hidden")
 
-        document.getElementById(winID).innerHTML = `Won: ${toWin}`
+        document.getElementById(winID).innerHTML = `Won: ${parseFloat(toWin).toLocaleString()}${currency}`
     }
     const updateLostDesign = () => {
         document.getElementById(divID).classList.remove("bg-green-500")
@@ -71,19 +77,19 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
         document.getElementById(xID).classList.remove("text-red-500")
         document.getElementById(xID).classList.add("text-white")
         document.getElementById(checkDivID).classList.add("hidden")
-        document.getElementById(winID).innerHTML = `Lost: ${stake}`
+        document.getElementById(winID).innerHTML = `Lost: ${parseFloat(stake).toLocaleString()}${currency}`
     }
 
     return (
         <>
             <div id={divID} className="w-[90vw] h-[6rem] sm:w-[40vw] sm:h-[6rem] flex flex-col bg-gray text-white rounded-lg my-1 p-2">
                 <div className="flex flex-row justify-between">
-                   <h1>{title} </h1>
-                <p className="text-end">Stake: {stake} x{odds}</p>
+                   <h1>{title}</h1>
+                <p className="text-end">Stake: {parseInt(stake).toLocaleString()}{currency} x{odds}</p>
                 </div>
                 <div className="flex flex-row justify-between">
                     <p className="text-sm text-end">{time}</p>
-                    <p id={winID}>To Win: {toWin}</p>
+                    <p id={winID}>To Win: {parseFloat(toWin).toLocaleString()}{currency}</p>
                 </div>
                 <div className="flex flex-row justify-between">
                     <div className="flex flex-row">

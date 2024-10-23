@@ -11,7 +11,7 @@ function Home() {
     const stakeInputRef = useRef(null)
     const oddsInputRef = useRef(null)
 
-
+    const [currentSelection, setSelection] = useState("parlay")
 
     const handleDeleteBet = (id) => {
         const updatedBets = betContainers.filter((bet) => bet.id !== id)
@@ -39,51 +39,57 @@ function Home() {
     let isErrorVisible = false
 
     const addBet = () => {
+        if(currentSelection === 'parlay') {
+            if(parseInt(stakeInputRef.current.value) > 0 && parseInt(oddsInputRef.current.value) > 0 && stakeInputRef.current.value !== "" && oddsInputRef.current.value !== "") {
 
-        if(parseInt(stakeInputRef.current.value) > 0 && parseInt(oddsInputRef.current.value) > 0 && stakeInputRef.current.value !== "" && oddsInputRef.current.value !== "") {
+                if(isErrorVisible){
+                    errorHandler.classList.add('hidden')
+                    isErrorVisible=false
+                }
 
-            if(isErrorVisible){
-                errorHandler.classList.add('hidden')
-                isErrorVisible=false
+                const title = titleInputRef.current.value
+                const stake = stakeInputRef.current.value
+                const odds = oddsInputRef.current.value
+                const id = betNumber
+
+                const current = new Date()
+                const time = `${current.getHours().toString().padStart(2,'0')}:${current.getMinutes().toString().padStart(2,'0')}:${current.getSeconds().toString().padStart(2, '0')} 
+            ${current.getDate().toString().padStart(2,'0')}/${current.getMonth().toString().padStart(2,'0')}/${current.getFullYear()}`
+
+                setBetContainers([...betContainers, {id,title,stake,odds,time}])
+                localStorage.setItem('betContainers', JSON.stringify([...betContainers, {id,title,stake,odds,time}]))
+                setBetNumber(betNumber + 1)
+                localStorage.setItem('betNumber', betNumber+1)
+
+                titleInputRef.current.value = ""
+                stakeInputRef.current.value = ""
+                oddsInputRef.current.value = ""
             }
 
-            const title = titleInputRef.current.value
-            const stake = stakeInputRef.current.value
-            const odds = oddsInputRef.current.value
-            const id = betNumber
-
-            const current = new Date()
-            const time = `${current.getHours().toString().padStart(2,'0')}:${current.getMinutes().toString().padStart(2,'0')}:${current.getSeconds().toString().padStart(2, '0')} 
-        ${current.getDate().toString().padStart(2,'0')}/${current.getMonth().toString().padStart(2,'0')}/${current.getFullYear()}`
-
-            setBetContainers([...betContainers, {id,title,stake,odds,time}])
-            localStorage.setItem('betContainers', JSON.stringify([...betContainers, {id,title,stake,odds,time}]))
-            setBetNumber(betNumber + 1)
-            localStorage.setItem('betNumber', betNumber+1)
-
-            titleInputRef.current.value = ""
-            stakeInputRef.current.value = ""
-            oddsInputRef.current.value = ""
+            else if(parseInt(stakeInputRef.current.value) <= 0 || parseInt(oddsInputRef.current.value) <= 0) {
+                errorHandler.innerHTML = "Stake and odds must be greater than 0"
+                errorHandler.classList.remove('hidden')
+                isErrorVisible=true
+            }
+            else if(stakeInputRef.current.value === "" || oddsInputRef.current.value === "") {
+                errorHandler.innerHTML = "Stake and odds cannot be empty"
+                errorHandler.classList.remove('hidden')
+                isErrorVisible=true
+            }
         }
-
-        else if(parseInt(stakeInputRef.current.value) <= 0 || parseInt(oddsInputRef.current.value) <= 0) {
-            errorHandler.innerHTML = "Stake and odds must be greater than 0"
-            errorHandler.classList.remove('hidden')
-            isErrorVisible=true
-        }
-        else if(stakeInputRef.current.value === "" || oddsInputRef.current.value === "") {
-            errorHandler.innerHTML = "Stake and odds cannot be empty"
-            errorHandler.classList.remove('hidden')
-            isErrorVisible=true
+        if(currentSelection === 'single') {
+            console.error("Not implemented")
         }
     }
 
     const updateSelection = () => {
         const selection = document.getElementById('selection').value
         if(selection === 'single') {
+            setSelection("single")
             document.getElementById('single').classList.remove('hidden')
             document.getElementById('parlay').classList.add('hidden')
         } else if(selection === 'parlay') {
+            setSelection("parlay")
             document.getElementById('single').classList.add('hidden')
             document.getElementById('parlay').classList.remove('hidden')
         }
@@ -149,7 +155,8 @@ function Home() {
                     </div>
                     <div className="flex flex-col-reverse">
                         {betContainers.map((bet, index) => (
-                            <BetContainer key={index}
+                            <BetContainer betType={bet.betType}
+                                          key={index}
                                           id={bet.id}
                                           title={bet.title === "" ? `Untitled Bet ${bet.id}` : bet.title}
                                           stake={bet.stake} odds={bet.odds}
