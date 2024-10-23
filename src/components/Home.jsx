@@ -11,7 +11,7 @@ function Home() {
     const stakeInputRef = useRef(null)
     const oddsInputRef = useRef(null)
 
-    const errorHandler = document.getElementById('errorHandler')
+
 
     const handleDeleteBet = (id) => {
         const updatedBets = betContainers.filter((bet) => bet.id !== id)
@@ -34,12 +34,17 @@ function Home() {
         localStorage.setItem('totalStake', totalStake);
     }, [betContainers]);
 
+
+    const errorHandler = document.getElementById('errorHandler')
+    let isErrorVisible = false
+
     const addBet = () => {
 
         if(parseInt(stakeInputRef.current.value) > 0 && parseInt(oddsInputRef.current.value) > 0 && stakeInputRef.current.value !== "" && oddsInputRef.current.value !== "") {
 
-            if(!errorHandler.classList.contains('hidden')){
+            if(isErrorVisible){
                 errorHandler.classList.add('hidden')
+                isErrorVisible=false
             }
 
             const title = titleInputRef.current.value
@@ -64,10 +69,12 @@ function Home() {
         else if(parseInt(stakeInputRef.current.value) <= 0 || parseInt(oddsInputRef.current.value) <= 0) {
             errorHandler.innerHTML = "Stake and odds must be greater than 0"
             errorHandler.classList.remove('hidden')
+            isErrorVisible=true
         }
         else if(stakeInputRef.current.value === "" || oddsInputRef.current.value === "") {
             errorHandler.innerHTML = "Stake and odds cannot be empty"
             errorHandler.classList.remove('hidden')
+            isErrorVisible=true
         }
     }
 
