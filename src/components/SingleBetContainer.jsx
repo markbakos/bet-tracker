@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {useNavigate} from "react-router-dom"
 
 function SingleBetContainer({id, title, stake, odds, time, onDeleteBet}) {
     const toWin = (stake * odds).toFixed(2).toLocaleString()
@@ -6,6 +7,7 @@ function SingleBetContainer({id, title, stake, odds, time, onDeleteBet}) {
     const winID = `win${id}`
 
     const currency = localStorage.getItem('currency')
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (localStorage.getItem(divID)) {
@@ -49,7 +51,7 @@ function SingleBetContainer({id, title, stake, odds, time, onDeleteBet}) {
             updateTotalWon(+parseFloat(stake))
         }
         onDeleteBet(id)
-        window.location.reload()
+        navigate(0)
     }
 
 

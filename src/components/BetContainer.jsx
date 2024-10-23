@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 
 function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
     const toWin = (stake * odds).toFixed(2).toLocaleString()
@@ -11,6 +12,8 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
     const xDivID = `xDiv${id}`
 
     const currency = localStorage.getItem('currency')
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (localStorage.getItem(divID)) {
@@ -54,7 +57,7 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
             updateTotalWon(+parseFloat(stake))
         }
         onDeleteBet(id)
-        window.location.reload()
+        navigate(0)
     }
 
 
@@ -84,8 +87,8 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
         <>
             <div id={divID} className="w-[90vw] h-[6rem] sm:w-[40vw] sm:h-[6rem] flex flex-col bg-gray text-white rounded-lg my-1 p-2">
                 <div className="flex flex-row justify-between">
-                   <h1>{title}</h1>
-                <p className="text-end">Stake: {parseInt(stake).toLocaleString()}{currency} x{odds}</p>
+                    <h1>{title}</h1>
+                    <p className="text-end">Stake: {parseInt(stake).toLocaleString()}{currency} x{odds}</p>
                 </div>
                 <div className="flex flex-row justify-between">
                     <p className="text-sm text-end">{time}</p>
@@ -94,18 +97,18 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
                 <div className="flex flex-row justify-between">
                     <div className="flex flex-row">
                         <div id={checkDivID}
-                            title="Won Bet"
-                            onClick={wonBet}
-                            className="w-8 h-8 sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-green-500 transition ease-in-out transition:duration-400 transition:delay-100">
+                             title="Won Bet"
+                             onClick={wonBet}
+                             className="w-8 h-8 sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-green-500 transition ease-in-out transition:duration-400 transition:delay-100">
                             <p id={checkID}
                                className="text-center text-4xl text-green-500 hover:text-white select-none transition ease-in-out transition:duration-400 transition:delay-100">
                                 ✔
                             </p>
                         </div>
                         <div id={xDivID}
-                            title="Lost Bet"
-                            onClick={lostBet}
-                            className="w-8 h-8 sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-red-500 transition ease-in-out transition:duration-400 transition:delay-100">
+                             title="Lost Bet"
+                             onClick={lostBet}
+                             className="w-8 h-8 sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-red-500 transition ease-in-out transition:duration-400 transition:delay-100">
                             <p id={xID}
                                className="text-center text-4xl text-red-500 hover:text-white select-none transition ease-in-out transition:duration-400 transition:delay-100">
                                 ×

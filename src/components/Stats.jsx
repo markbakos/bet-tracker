@@ -1,15 +1,16 @@
 import {useEffect} from "react";
+import {useNavigate} from "react-router-dom"
 
 function Stats() {
 
-
+    const navigate = useNavigate()
 
     const resetData = () => {
         localStorage.clear()
         localStorage.setItem('currency', '$')
         localStorage.setItem('totalWon', 0)
         localStorage.setItem('totalStake', 0)
-        window.location.reload()
+        navigate(0)
     }
 
     const openPopUp = () => {
@@ -24,7 +25,7 @@ function Stats() {
     const changeCurrency = () => {
         const currencyInput = document.getElementById('currencyInput').value
         localStorage.setItem('currency', currencyInput)
-        window.location.reload()
+        navigate(0)
     }
 
     useEffect(() => {
