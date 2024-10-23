@@ -11,6 +11,8 @@ function Home() {
     const stakeInputRef = useRef(null)
     const oddsInputRef = useRef(null)
 
+    const errorHandler = document.getElementById('errorHandler')
+
     const handleDeleteBet = (id) => {
         const updatedBets = betContainers.filter((bet) => bet.id !== id)
         setBetContainers(updatedBets)
@@ -33,23 +35,51 @@ function Home() {
     }, [betContainers]);
 
     const addBet = () => {
-        const title = titleInputRef.current.value
-        const stake = stakeInputRef.current.value
-        const odds = oddsInputRef.current.value
-        const id = betNumber
 
-        const current = new Date()
-        const time = `${current.getHours().toString().padStart(2,'0')}:${current.getMinutes().toString().padStart(2,'0')}:${current.getSeconds().toString().padStart(2, '0')} 
+        if(parseInt(stakeInputRef.current.value) > 0 && parseInt(oddsInputRef.current.value) > 0 && stakeInputRef.current.value !== "" && oddsInputRef.current.value !== "") {
+
+            if(!errorHandler.classList.contains('hidden')){
+                errorHandler.classList.add('hidden')
+            }
+
+            const title = titleInputRef.current.value
+            const stake = stakeInputRef.current.value
+            const odds = oddsInputRef.current.value
+            const id = betNumber
+
+            const current = new Date()
+            const time = `${current.getHours().toString().padStart(2,'0')}:${current.getMinutes().toString().padStart(2,'0')}:${current.getSeconds().toString().padStart(2, '0')} 
         ${current.getDate().toString().padStart(2,'0')}/${current.getMonth().toString().padStart(2,'0')}/${current.getFullYear()}`
 
-        setBetContainers([...betContainers, {id,title,stake,odds,time}])
-        localStorage.setItem('betContainers', JSON.stringify([...betContainers, {id,title,stake,odds,time}]))
-        setBetNumber(betNumber + 1)
-        localStorage.setItem('betNumber', betNumber+1)
+            setBetContainers([...betContainers, {id,title,stake,odds,time}])
+            localStorage.setItem('betContainers', JSON.stringify([...betContainers, {id,title,stake,odds,time}]))
+            setBetNumber(betNumber + 1)
+            localStorage.setItem('betNumber', betNumber+1)
 
-        titleInputRef.current.value = ""
-        stakeInputRef.current.value = "0"
-        oddsInputRef.current.value = "1.0"
+            titleInputRef.current.value = ""
+            stakeInputRef.current.value = ""
+            oddsInputRef.current.value = ""
+        }
+
+        else if(parseInt(stakeInputRef.current.value) <= 0 || parseInt(oddsInputRef.current.value) <= 0) {
+            errorHandler.innerHTML = "Stake and odds must be greater than 0"
+            errorHandler.classList.remove('hidden')
+        }
+        else if(stakeInputRef.current.value === "" || oddsInputRef.current.value === "") {
+            errorHandler.innerHTML = "Stake and odds cannot be empty"
+            errorHandler.classList.remove('hidden')
+        }
+    }
+
+    const updateSelection = () => {
+        const selection = document.getElementById('selection').value
+        if(selection === 'single') {
+            document.getElementById('single').classList.remove('hidden')
+            document.getElementById('parlay').classList.add('hidden')
+        } else if(selection === 'parlay') {
+            document.getElementById('single').classList.add('hidden')
+            document.getElementById('parlay').classList.remove('hidden')
+        }
     }
 
     return (
@@ -57,26 +87,33 @@ function Home() {
             <div>
                 <h1 className="text-center text-3xl">Gambling Tracker</h1>
                 <div className="flex justify-center">
-                    <div className="w-80 sm:w-[40vw] h-[0.2vh] bg-gray rounded-full"></div>
+                    <div className="w-80 sm:w-[40rem] h-[0.1rem] bg-gray rounded-full"></div>
                 </div>
 
 
                 <h1 className="text-center text-2xl my-4">Add a new bet</h1>
                 <div className="flex flex-col justify-center items-center">
-                    <select className="w-[55vw] sm:w-[14.5vw] h-6 rounded-lg text-center my-2">
-                        <option
-                            value="parlay">Parlay</option>
+                    <select
+                        id="selection"
+                        onChange={updateSelection}
+                        className="w-[13rem] h-6 rounded-lg text-center my-2">
+                        <option value="parlay">Parlay</option>
                         <option value="single">Single (Slots)</option>
                     </select>
 
-                    <div className="hidden flex flex-col justify-center items-center">
-                        <input ref={titleInputRef} id="titleInput" type="text" placeholder="Slot" maxLength="16"
+                    <div id="single"
+                         className="hidden flex flex-col justify-center items-center">
+                        <input ref={titleInputRef} id="titleInput" type="text" placeholder="Title" maxLength="16"
                                className="border rounded-lg text-center"></input>
                         <input ref={stakeInputRef} id="stakeInput" type="number" placeholder="Stake" min="0"
                                className="border rounded-lg text-center my-2"></input>
+                        <input ref={stakeInputRef} id="stakeInput" type="number" placeholder="Return" min="0"
+                               className="border rounded-lg text-center"></input>
+
                     </div>
 
-                    <div className="flex flex-col justify-center items-center">
+                    <div id="parlay"
+                         className="flex flex-col justify-center items-center">
                         <input ref={titleInputRef} id="titleInput" type="text" placeholder="Title" maxLength="16"
                                className="border rounded-lg text-center"></input>
                         <input ref={stakeInputRef} id="stakeInput" type="number" placeholder="Stake" min="0"
@@ -87,11 +124,18 @@ function Home() {
 
 
                     <button onClick={addBet}
-                            className="w-[55vw] sm:w-[14.5vw] h-6 rounded-lg bg-gray text-white my-2">Add Bet
+                            className="w-[13rem] h-6 rounded-lg bg-gray text-white my-2">Add Bet
                     </button>
+
+                    <h3 id="errorHandler"
+                        className="text-red-500 text-center my-2">
+                    </h3>
 
                     <div>
                         <h1 className="text-center text-2xl mt-4">Recent Bets</h1>
+
+
+
                         <div className="flex justify-center">
                             <div className="w-80 sm:w-[40vw] h-[0.2vh] bg-gray rounded-full mb-4"></div>
                         </div>

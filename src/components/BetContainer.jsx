@@ -76,13 +76,13 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
 
     return (
         <>
-            <div id={divID} className="w-[90vw] h-[14vh] sm:w-[40vw] sm:h-[13vh] flex flex-col bg-gray text-white rounded-lg my-1 p-2">
+            <div id={divID} className="w-[90vw] h-[6rem] sm:w-[40vw] sm:h-[6rem] flex flex-col bg-gray text-white rounded-lg my-1 p-2">
                 <div className="flex flex-row justify-between">
                    <h1>{title} </h1>
                 <p className="text-end">Stake: {stake} x{odds}</p>
                 </div>
                 <div className="flex flex-row justify-between">
-                    <p className="text-sm text-end">{time} #{id}</p>
+                    <p className="text-sm text-end">{time}</p>
                     <p id={winID}>To Win: {toWin}</p>
                 </div>
                 <div className="flex flex-row justify-between">
@@ -90,7 +90,7 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
                         <div id={checkDivID}
                             title="Won Bet"
                             onClick={wonBet}
-                            className="w-[8vw] h-[4.5vh] sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-green-500 transition ease-in-out transition:duration-400 transition:delay-100">
+                            className="w-8 h-8 sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-green-500 transition ease-in-out transition:duration-400 transition:delay-100">
                             <p id={checkID}
                                className="text-center text-4xl text-green-500 hover:text-white select-none transition ease-in-out transition:duration-400 transition:delay-100">
                                 ✔
@@ -99,7 +99,7 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
                         <div id={xDivID}
                             title="Lost Bet"
                             onClick={lostBet}
-                            className="w-[8vw] h-[4.5vh] sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-red-500 transition ease-in-out transition:duration-400 transition:delay-100">
+                            className="w-8 h-8 sm:w-[2.5vw] flex justify-center items-center rounded-full mr-2 cursor-pointer hover:bg-red-500 transition ease-in-out transition:duration-400 transition:delay-100">
                             <p id={xID}
                                className="text-center text-4xl text-red-500 hover:text-white select-none transition ease-in-out transition:duration-400 transition:delay-100">
                                 ×
@@ -111,7 +111,7 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
                         title="Delete Bet"
                         onClick={deleteBet}
                         draggable="false"
-                        className="w-8 mr-2 cursor-pointer select-none"
+                        className="h-8 mr-2 cursor-pointer select-none"
                         src="https://github.com/mrkdsoftware/bet-tracker/blob/main/src/assets/trash.png?raw=true" />
 
                 </div>

@@ -9,11 +9,11 @@ function App() {
     <>
       <div>
           <nav className="w-screen text-center flex flex-row justify-center">
-              <Link to="/"> <div className={`w-[20vw] h-[5vh] flex items-center justify-center my-4 rounded-lg ${splitLocation[1] === "" ? "active" : ""}`}>
+              <Link to="/"> <div className={`w-[5rem] sm:w-[20rem] h-[2.5rem] flex items-center justify-center my-4 rounded-lg ${splitLocation[1] === "" ? "active" : ""}`}>
                       Home
               </div></Link>
               <Link to="/stats"><div
-                  className={`w-[20vw] h-[5vh] flex items-center justify-center my-4 rounded-lg ${splitLocation[1] === "stats" ? "active" : ""}`}>
+                  className={`w-[5rem] sm:w-[20rem] h-[2.5rem] flex items-center justify-center my-4 rounded-lg ${splitLocation[1] === "stats" ? "active" : ""}`}>
                   Stats
               </div></Link>
           </nav>
