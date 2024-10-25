@@ -8,9 +8,16 @@ function Home() {
     const [betNumber, setBetNumber] = useState(1)
     const [betContainers, setBetContainers] = useState([])
 
+    const [singleBetNumber, setSingleBetNumber] = useState(1)
+    const [singleBetContainers, setSingleBetContainers] = useState([])
+
     const titleInputRef = useRef(null)
     const stakeInputRef = useRef(null)
     const oddsInputRef = useRef(null)
+
+    const singletitleInputRef = useRef(null)
+    const singlestakeInputRef = useRef(null)
+    const singlereturnInputRef = useRef(null)
 
     useEffect(() => {
         if (localStorage.getItem('betContainers')) {
@@ -18,6 +25,13 @@ function Home() {
         }
         if (localStorage.getItem('betNumber')) {
             setBetNumber(JSON.parse(localStorage.getItem('betNumber')))
+        }
+
+        if (localStorage.getItem('singleBetContainers')) {
+            setSingleBetContainers(JSON.parse(localStorage.getItem('singleBetContainers')))
+        }
+        if (localStorage.getItem('singleBetNumber')) {
+            setSingleBetNumber(JSON.parse(localStorage.getItem('singleBetNumber')))
         }
 
         if(localStorage.getItem('containerSelected') === 'single') {
@@ -34,6 +48,11 @@ function Home() {
         const totalStake = betContainers.reduce((acc, bet) => acc + parseInt(bet.stake), 0);
         localStorage.setItem('totalStake', totalStake);
     }, [betContainers]);
+
+    useEffect(() => {
+        const totalSingleStake = singleBetContainers.reduce((acc, bet) => acc + parseInt(bet.stake), 0);
+        localStorage.setItem('totalSingleStake', totalSingleStake);
+    }, [singleBetContainers])
 
     const errorHandler = document.getElementById('errorHandler')
     let isErrorVisible = false
@@ -55,7 +74,7 @@ function Home() {
 
                 const current = new Date()
                 const time = `${current.getHours().toString().padStart(2,'0')}:${current.getMinutes().toString().padStart(2,'0')}:${current.getSeconds().toString().padStart(2, '0')} 
-            ${current.getDate().toString().padStart(2,'0')}/${current.getMonth().toString().padStart(2,'0')}/${current.getFullYear()}`
+            ${current.getDate().toString().padStart(2,'0')}/${(current.getMonth()+1).toString().padStart(2,'0')}/${current.getFullYear()}`
 
                 setBetContainers([...betContainers, {id,title,stake,odds,time}])
                 localStorage.setItem('betContainers', JSON.stringify([...betContainers, {id,title,stake,odds,time}]))
@@ -80,7 +99,42 @@ function Home() {
         }
 
         if(currentSelection === 'single') {
-            console.error("Not implemented yet")
+            if(parseInt(singlestakeInputRef.current.value) > 0 && parseInt(singlereturnInputRef.current.value) >= 0 && singlestakeInputRef.current.value !== "" && singlereturnInputRef.current.value !== "") {
+
+                if(isErrorVisible){
+                    errorHandler.classList.add('hidden')
+                    isErrorVisible=false
+                }
+
+                const title = singletitleInputRef.current.value
+                const stake = singlestakeInputRef.current.value
+                const returned = singlereturnInputRef.current.value
+                const singleID = singleBetNumber
+
+                const current = new Date()
+                const time = `${current.getHours().toString().padStart(2,'0')}:${current.getMinutes().toString().padStart(2,'0')}:${current.getSeconds().toString().padStart(2, '0')} 
+            ${current.getDate().toString().padStart(2,'0')}/${(current.getMonth()+1).toString().padStart(2,'0')}/${current.getFullYear()}`
+
+                setSingleBetContainers([...singleBetContainers, {singleID,title,stake,returned,time}])
+                localStorage.setItem('singleBetContainers', JSON.stringify([...singleBetContainers, {singleID,title,stake,returned,time}]))
+                setSingleBetNumber(singleBetNumber + 1)
+                localStorage.setItem('singleBetNumber', singleBetNumber+1)
+
+                singletitleInputRef.current.value = ""
+                singlestakeInputRef.current.value = ""
+                singlereturnInputRef.current.value = ""
+            }
+
+            else if(parseInt(singlestakeInputRef.current.value) < 0 || parseInt(singlereturnInputRef.current.value) < 0) {
+                errorHandler.innerHTML = "Stake and odds must be greater than 0"
+                errorHandler.classList.remove('hidden')
+                isErrorVisible=true
+            }
+            else if(singlestakeInputRef.current.value === "" || singlereturnInputRef.current.value === "") {
+                errorHandler.innerHTML = "Stake and odds cannot be empty"
+                errorHandler.classList.remove('hidden')
+                isErrorVisible=true
+            }
         }
     }
 
@@ -88,6 +142,12 @@ function Home() {
         const updatedBets = betContainers.filter((bet) => bet.id !== id)
         setBetContainers(updatedBets)
         localStorage.setItem('betContainers', JSON.stringify(updatedBets))
+    }
+
+    const handleDeleteSingleBet = (id) => {
+        const updatedBets = singleBetContainers.filter((bet) => bet.singleID !== id)
+        setSingleBetContainers(updatedBets)
+        localStorage.setItem('singleBetContainers', JSON.stringify(updatedBets))
     }
 
 
@@ -131,11 +191,11 @@ function Home() {
 
                     <div id="single"
                          className="hidden flex flex-col justify-center items-center">
-                        <input ref={titleInputRef} id="titleInput" type="text" placeholder="Title" maxLength="16"
+                        <input ref={singletitleInputRef} id="titleInput" type="text" placeholder="Title" maxLength="16"
                                className="border rounded-lg text-center"></input>
-                        <input ref={stakeInputRef} id="stakeInput" type="number" placeholder="Stake" min="0"
+                        <input ref={singlestakeInputRef} id="stakeInput" type="number" placeholder="Stake" min="0"
                                className="border rounded-lg text-center my-2"></input>
-                        <input ref={stakeInputRef} id="stakeInput" type="number" placeholder="Return" min="0"
+                        <input ref={singlereturnInputRef} id="returnInput" type="number" placeholder="Return" min="0"
                                className="border rounded-lg text-center"></input>
 
                     </div>
@@ -175,7 +235,8 @@ function Home() {
                                           key={index}
                                           id={bet.id}
                                           title={bet.title === "" ? `Untitled Bet ${bet.id}` : bet.title}
-                                          stake={bet.stake} odds={bet.odds}
+                                          stake={bet.stake}
+                                          odds={bet.odds}
                                           time={bet.time}
                                           onDeleteBet={handleDeleteBet}
                             />
@@ -183,7 +244,17 @@ function Home() {
                     </div>
                     <div id="singleContainer"
                          className="hidden flex flex-col-reverse">
-
+                        {singleBetContainers.map((bet, index) => (
+                            <SingleBetContainer betType={bet.betType}
+                                                key={index}
+                                                id={bet.singleID}
+                                                title={bet.title === "" ? `Untitled Bet ${bet.singleID}` : bet.title}
+                                                stake={bet.stake}
+                                                returned={bet.returned}
+                                                time={bet.time}
+                                                onDeleteBet={handleDeleteSingleBet}
+                            />
+                        ))}
                     </div>
 
                 </div>
