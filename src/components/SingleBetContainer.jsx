@@ -19,7 +19,7 @@ function SingleBetContainer({id, title, stake, returned, time, onDeleteBet}) {
                 updateLostDesign()
                 if(localStorage.getItem(singleDivID) !== 'lost'){
                     localStorage.setItem(singleDivID, 'lost')
-                    updateTotalWon(-parseFloat(totalReturn))
+                    updateTotalWon(parseFloat(returned))
                 }
             }
     }, [singleDivID])
