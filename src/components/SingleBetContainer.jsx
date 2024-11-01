@@ -22,6 +22,13 @@ function SingleBetContainer({id, title, stake, returned, time, onDeleteBet}) {
                     updateTotalWon(parseFloat(returned))
                 }
             }
+            else {
+                if(localStorage.getItem(singleDivID) !== 'draw'){
+                    localStorage.setItem(singleDivID, 'draw')
+                    updateTotalWon(parseFloat(stake))
+                }
+
+            }
     }, [singleDivID])
 
     const updateWonDesign = () => {
@@ -41,11 +48,7 @@ function SingleBetContainer({id, title, stake, returned, time, onDeleteBet}) {
     }
 
     const deleteBet = () => {
-        if(parseInt(totalReturn) > 0){
-            updateTotalWon(-parseFloat(totalReturn))
-        } else if(parseInt(totalReturn) < 0) {
-            updateTotalWon(+parseFloat(stake))
-        }
+        updateTotalWon(parseFloat(-returned))
         onDeleteBet(id)
         navigate(0)
     }
