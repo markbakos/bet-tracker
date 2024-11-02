@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useNavigate} from "react-router-dom"
 
 import BarChart from "./BarChart.jsx"
@@ -34,6 +34,19 @@ function Stats() {
         const currencyInput = document.getElementById('currencyInput').value
         localStorage.setItem('currency', currencyInput)
         navigate(0)
+    }
+
+    const separateCurrency = () => {
+        if(localStorage.getItem('currency')[0] !== ' '){
+            const currentCurrency = " " + localStorage.getItem('currency')
+            localStorage.setItem('currency',currentCurrency)
+            navigate(0)
+        }
+        else{
+            const currentCurrency = localStorage.getItem('currency').slice(1)
+            localStorage.setItem('currency',currentCurrency)
+            navigate(0)
+        }
     }
 
     useEffect(() => {
@@ -194,7 +207,9 @@ function Stats() {
                             Change
                         </button>
                     </div>
-                    {/* TODO: add button for separating */}
+                    <button
+                        onClick={separateCurrency}
+                        className="w-[8rem] h-[2.5rem] bg-gray rounded-lg text-white m-2">Separate</button>
 
                 </div>
 

@@ -1,6 +1,8 @@
 import { Chart, registerables } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
+import {useEffect} from "react";
+
 // Register all the default scales
 Chart.register(...registerables);
 
@@ -14,14 +16,14 @@ const chartData = {
             parseFloat(localStorage.getItem('totalSingleWon') - localStorage.getItem('totalSingleStake')),
         ],
         backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
+            'rgba(149, 236, 32, 1)',
+            'rgba(47, 61, 246, 1)',
+            'rgba(253, 48, 48, 1)',
         ],
         borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
+            'rgba(109, 180, 13, 1)',
+            'rgba(11, 20, 138, 1)',
+            'rgba(123, 8, 8, 1)',
         ],
         borderWidth: 1
     }]
@@ -59,6 +61,16 @@ const chartOptions = {
 }
 
 export default function BarChart() {
+
+    useEffect(() => {
+        chartData.datasets[0].data = [
+            parseFloat((localStorage.getItem('totalWon') - localStorage.getItem('totalStake')) + (localStorage.getItem('totalSingleWon') - localStorage.getItem('totalSingleStake'))),
+            parseFloat(localStorage.getItem('totalWon') - localStorage.getItem('totalStake')),
+            parseFloat(localStorage.getItem('totalSingleWon') - localStorage.getItem('totalSingleStake')),
+        ]
+    }, []);
+
+
     return (
         <div className="w-[100vw] sm:w-[60vw] h-[40vh] sm:h-[60vh]">
             <Bar options={chartOptions} data={chartData} />
