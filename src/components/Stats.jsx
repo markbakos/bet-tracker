@@ -1,5 +1,8 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom"
+
+import BarChart from "./BarChart.jsx"
+
 
 function Stats() {
 
@@ -77,6 +80,7 @@ function Stats() {
             <div className="flex justify-center">
                 <div className="w-80 sm:w-[40rem] h-[0.1rem] bg-gray rounded-full"></div>
             </div>
+
             <div className="flex justify-center items-center flex-col">
                 <div className="my-8">
                     <h1 className="text-center text-3xl mb-2 font-semibold select-none">Overall:</h1>
@@ -104,6 +108,9 @@ function Stats() {
                     </h1>
                 </div>
 
+                <div className="flex justify-center items-center flex-col">
+                    <BarChart/>
+                </div>
 
                 <div className="w-screen flex flex-col sm:flex-row sm:justify-center">
                     <div className="my-8">
@@ -133,7 +140,8 @@ function Stats() {
                     </div>
 
                     <div className="flex justify-center">
-                        <div className="w-80 sm:w-[15rem] h-[0.1rem] mt-3 invisible sm:visible bg-gray rounded-full"></div>
+                        <div
+                            className="w-80 sm:w-[15rem] h-[0.1rem] mt-3 invisible sm:visible bg-gray rounded-full"></div>
                     </div>
 
                     <div className="flex justify-center items-center flex-col">

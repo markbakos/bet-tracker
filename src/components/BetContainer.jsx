@@ -40,7 +40,6 @@ function BetContainer({id, title, stake, odds, time, onDeleteBet}) {
         updateLostDesign()
         if(localStorage.getItem(divID) !== 'lost'){
             localStorage.setItem(divID, 'lost')
-            updateTotalWon(-parseFloat(stake))
         }
 
     }
